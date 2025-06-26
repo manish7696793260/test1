@@ -1,0 +1,10 @@
+{
+	"Parameters" : {
+	  "EnvironmentType" : "stg",
+	  "SpecificRegion": "eu",
+	  "VitalsightReportIP": "",
+	  "VitalsightReportPORT": "",
+	  "OFSReportIP": "",
+	  "OFSReportPORT": ""
+	}
+}

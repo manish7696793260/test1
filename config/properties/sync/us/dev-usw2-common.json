@@ -1,0 +1,16 @@
+{
+    "Parameters": {
+        "Environment" : "dev",
+        "CountryCode" : "us",
+        "SubNetId1": "subnet-0d8f4660e0069e88d",
+        "SubNetId2": "subnet-01b2163505bcaa8f0",
+        "SecurityGroupId": "sg-07bf8f23c28e8d851",
+        "VpcId": "vpc-0dc07590f943f80c2",
+        "InfoLogLevel": "info, log, warn, error",
+        "LambdaRole": "usdev-common-sync-service-lambda-role",
+        "NotificationEmailFrom": "awsalert.staging@ohiomron.com",
+        "NotificationEmailTo": "awsalert.staging@ohiomron.com",
+        "DeploymentRegion": "usw2",
+        "Prefix": "usdev-usw2"
+    }
+}

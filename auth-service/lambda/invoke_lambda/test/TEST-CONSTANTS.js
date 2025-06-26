@@ -1,0 +1,11 @@
+exports.REGION = 'us-west-2';
+const STAGE = 'test_global';
+exports.STAGE = STAGE;
+const codeURI = 'vs_app_signup';
+exports.CODE_URI = codeURI;
+exports.TEST_TITLE = 'Test case for invoke lambda';
+exports.SUCCESS_LAMBDAS = ['success'];
+exports.INVALID_LAMBDA = ['invalid_lambda', 'email_failed'];
+exports.EMAIL_FAILED_LAMBDA = ['email_failed', 'invalid_lambda'];
+exports.INVOKE_FAILED_LAMBDAS = ['invalid_lambda', 'success'];
+exports.EMAIL_FAILED_LAMBDA_NAME = 'email_failed';

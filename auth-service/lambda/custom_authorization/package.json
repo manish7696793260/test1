@@ -1,0 +1,17 @@
+{
+  "name": "custom_authorization",
+  "version": "1.0.0",
+  "description": "AWS Lambda function for handling user custom authorizer",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Omron",
+  "license": "ISC",
+  "dependencies": {
+    "jsonwebtoken": "^8.5.1",
+    "jwk-to-pem": "^2.0.4",
+    "joi": "^17.9.2"
+  }
+}

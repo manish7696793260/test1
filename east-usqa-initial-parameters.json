@@ -1,0 +1,6 @@
+{
+	"Parameters" : {
+	  "EnvironmentType" : "qa",
+	  "SpecificRegion": "east-us"
+	}
+}

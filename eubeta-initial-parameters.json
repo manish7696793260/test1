@@ -1,0 +1,10 @@
+{
+	"Parameters" : {
+	  "EnvironmentType" : "beta",
+	  "SpecificRegion": "eu",
+	  "VitalsightReportIP": "",
+	  "VitalsightReportPORT": "",
+	  "OFSReportIP": "",
+	  "OFSReportPORT": ""
+	}
+}

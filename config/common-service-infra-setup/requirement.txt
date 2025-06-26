@@ -1,0 +1,46 @@
+Resource Creation 
+
+S3 Bucket:
+- s3-main-bucket-config : create S3 bucket and lifecycle rule
+
+
+cloudfront:
+- cloudfront_service: create cloudfront with required configuration
+  Note: Need to confirm: ACM Certificate and route53 mapping before creation
+  condition added for existing s3 bucket or bucket created through terraform
+- Route53:  mapping configuration for cloudfront with route53 domain_record_type
+- Update cloudfront access on S3 bucket policy. 
+
+
+vpc:
+Note: This module is responsible for creating resources if existing resource value (i.e vpc, nat, igw, endpoint)is not passed and it's also responsible for creating private route table for each env on vpc 
+- vpc-config : create vpc, igw, nat, route table, endpoint based on requirement
+- 2 condition: create infra on existing vpc or new vpc
+
+
+subnet:
+- subnet-config: create public and private subnet based on requirement
+- 2 condition: create infra on existing vpc or new vpc
+
+
+
+Security group:
+- security-group-config: create sg with required inbound and outbound.
+Note: if you have provided inbound and outbound list, you can't revert it back to empty inbound and outbound rule 
+Note:minimum one rule id required.
+
+
+
+NACL:
+- create nacl, add subnet to nacl and provide nacl inbound and outbound rules
+
+
+
+IAM :
+- iam-role-config: create role for lambda
+- iam-policy-config: create custom manage policy for lambda role
+
+
+
+
+

@@ -1,0 +1,21 @@
+{
+    "Parameters": {
+        "EnvironmentType" : "stg",
+        "Stage" : "stg_global",
+        "SpecificRegion": "US",
+        "INFOLOGLEVEL": "info, log, warn, error",
+        "WARNLOGLEVEL": "warn, error",
+        "ERRORLOGLEVEL": "error",
+        "SecretManager": "US_STG",
+        "SubNetID1": "subnet-0d8f4660e0069e88d",
+        "SubNetID2": "subnet-01b2163505bcaa8f0",
+        "SecurityGroupID": "sg-07bf8f23c28e8d851",
+        "VPCID": "vpc-0dc07590f943f80c2",
+        "SecretString": "{\n\"USER_POOL_ID\":\"us-west-2_mkXRIn5uQ\",\"OFC_CLIENT_ID\":\"5f70t79un9ep9k5rooqocr4mfg\"\n}",
+        "NotificationEmailFrom": "awsalert.staging@ohiomron.com",
+        "NotificationEmailTo": "awsalert.staging@ohiomron.com",
+        "LambdaRole": "usstg-omron-foresight-be-common-lambda-role",
+        "OFCSecretManagerEC2IP": "10.0.11.161",
+        "OFCSecretManagerPort": "8086"
+    }
+}

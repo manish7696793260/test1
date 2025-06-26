@@ -1,0 +1,15 @@
+{
+  "name": "forgot_password",
+  "version": "1.0.0",
+  "description": "AWS Lambda function for handling user forgot password",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Omron",
+  "license": "ISC",
+  "dependencies": {
+    "joi": "^17.9.2"   
+  }
+}

@@ -1,0 +1,21 @@
+{
+    "Parameters": {
+        "EnvironmentType" : "prd",
+        "Stage" : "prd_global",
+        "SpecificRegion": "US",
+        "INFOLOGLEVEL": "info, log, warn, error",
+        "WARNLOGLEVEL": "warn, error",
+        "ERRORLOGLEVEL": "error",
+        "SecretManager": "US_PRD",
+        "SecretString": "",
+        "SubNetID1": "subnet-0ed15ad23d1911f62",
+        "SubNetID2": "subnet-0e3e2010039cebc62",
+        "SecurityGroupID": "sg-0c44a77b150628df2",
+        "VPCID": "vpc-008bfc79",
+        "NotificationEmailFrom": "awsalert@ohiomron.com",
+        "NotificationEmailTo": "awsalert@ohiomron.com",
+        "LambdaRole": "usprd-omron-foresight-be-common-lambda-role",
+        "OFCSecretManagerEC2IP": "192.168.55.125",
+        "OFCSecretManagerPort": "8086"
+    }
+}

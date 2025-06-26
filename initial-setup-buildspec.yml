@@ -1,0 +1,68 @@
+version: 0.0
+environment_variables:
+    plaintext:
+        "INPUT_FILE": "initial-setup-saml.yaml"
+        "S3_BUCKET": ""
+containers:
+    LambdaFunctions:
+        phases:
+            during_build:
+                commands:
+                    - echo Installing Node Modules...
+                    - cd static_code_analysis_service_trigger && npm install --only=production
+                    - |
+                        if expr ${CODEBUILD_INITIATOR} : ".*codepipeline/usdev" >/dev/null; then
+                        aws s3 cp update_eslint_email_template_to_s3/info-template.html s3://dev-us-operations/static-code-report-template/info-email-template.html || true
+                        aws s3 cp update_eslint_email_template_to_s3/error-template.html s3://dev-us-operations/static-code-report-template/error-email-template.html || true
+                        fi
+                    - |
+                        if expr ${CODEBUILD_INITIATOR} : ".*codepipeline/usqa" >/dev/null; then
+                        aws s3 cp update_eslint_email_template_to_s3/info-template.html s3://qa-us-operations/static-code-report-template/info-email-template.html  || true
+                        aws s3 cp update_eslint_email_template_to_s3/error-template.html s3://qa-us-operations/static-code-report-template/error-email-template.html  || true                  
+                        fi
+                    - |        
+                        if expr ${CODEBUILD_INITIATOR} : ".*codepipeline/usstg" >/dev/null; then
+                        aws s3 cp update_eslint_email_template_to_s3/info-template.html s3://stg-us-operations/static-code-report-template/info-email-template.html || true
+                        aws s3 cp update_eslint_email_template_to_s3/error-template.html s3://stg-us-operations/static-code-report-template/error-email-template.html || true                
+                        fi
+                    - |  
+                        if expr ${CODEBUILD_INITIATOR} : ".*codepipeline/usbeta" >/dev/null; then
+                        aws s3 cp update_eslint_email_template_to_s3/info-template.html s3://beta-us-operations/static-code-report-template/info-email-template.html || true
+                        aws s3 cp update_eslint_email_template_to_s3/error-template.html s3://beta-us-operations/static-code-report-template/error-email-template.html || true
+                        fi
+                    - |                    
+                        if expr ${CODEBUILD_INITIATOR} : ".*codepipeline/usprd" >/dev/null; then
+                        aws s3 cp update_eslint_email_template_to_s3/info-template.html s3://prd-us-operations/static-code-report-template/info-email-template.html || true
+                        aws s3 cp update_eslint_email_template_to_s3/error-template.html s3://prd-us-operations/static-code-report-template/error-email-template.html || true
+                        fi
+                    - |
+                        if expr ${CODEBUILD_INITIATOR} : ".*codepipeline/eudev" >/dev/null; then
+                        aws s3 cp update_eslint_email_template_to_s3/info-template.html s3://dev-eu-operations/static-code-report-template/info-email-template.html || true
+                        aws s3 cp update_eslint_email_template_to_s3/error-template.html s3://dev-eu-operations/static-code-report-template/error-email-template.html || true
+                        echo "Pipeline continued execution!!" 
+                        fi
+                    - |
+                        if expr ${CODEBUILD_INITIATOR} : ".*codepipeline/euqa" >/dev/null; then
+                        aws s3 cp update_eslint_email_template_to_s3/info-template.html s3://qa-eu-operations/static-code-report-template/info-email-template.html  || true
+                        aws s3 cp update_eslint_email_template_to_s3/error-template.html s3://qa-eu-operations/static-code-report-template/error-email-template.html  || true                  
+                        fi
+                    - |        
+                        if expr ${CODEBUILD_INITIATOR} : ".*codepipeline/eustg" >/dev/null; then
+                        aws s3 cp update_eslint_email_template_to_s3/info-template.html s3://stg-eu-operations/static-code-report-template/info-email-template.html || true
+                        aws s3 cp update_eslint_email_template_to_s3/error-template.html s3://stg-eu-operations/static-code-report-template/error-email-template.html || true                
+                        fi
+                    - |  
+                        if expr ${CODEBUILD_INITIATOR} : ".*codepipeline/eubeta" >/dev/null; then
+                        aws s3 cp update_eslint_email_template_to_s3/info-template.html s3://beta-eu-operations/static-code-report-template/info-email-template.html || true
+                        aws s3 cp update_eslint_email_template_to_s3/error-template.html s3://beta-eu-operations/static-code-report-template/error-email-template.html || true
+                        fi
+                    - |                    
+                        if expr ${CODEBUILD_INITIATOR} : ".*codepipeline/euprd" >/dev/null; then
+                        aws s3 cp update_eslint_email_template_to_s3/info-template.html s3://prd-eu-operations/static-code-report-template/info-email-template.html || true
+                        aws s3 cp update_eslint_email_template_to_s3/error-template.html s3://prd-eu-operations/static-code-report-template/error-email-template.html || true
+                        fi
+                    - chmod +x static_code_analysis_package_publish.sh && ./static_code_analysis_package_publish.sh
+                    - aws cloudformation package --template $INPUT_FILE --s3-bucket $S3_BUCKET --output-template initial-setup-post-saml.yaml
+        artifacts:
+            files:
+                - initial-setup-post-saml.yaml

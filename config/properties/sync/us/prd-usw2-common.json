@@ -1,0 +1,16 @@
+{
+    "Parameters": {
+        "Environment" : "prd",
+        "CountryCode" : "us",
+        "SubNetId1": "<SubNetId1>",
+        "SubNetId2": "<SubNetId2>",
+        "SecurityGroupId": "<SecurityGroupId>",
+        "VpcId": "<VpcId>",
+        "InfoLogLevel": "info, log, warn, error",
+        "LambdaRole": "<LambdaRole>",
+        "NotificationEmailFrom": "awsalert@ohiomron.com",
+        "NotificationEmailTo": "awsalert@ohiomron.com",
+        "DeploymentRegion": "usw2",
+        "Prefix": "usprd-usw2"
+    }
+}

@@ -1,0 +1,29 @@
+version: 0.2
+
+env:
+  variables:
+    INPUT_FILE: config/saml/common-sync.yaml
+    S3_BUCKET: ""
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 20.x
+  build:
+    commands:
+      - npm install
+      - npm run reporter-sync || true
+      - pwd
+      - cd sync-service/utils && mkdir -p nodejs/node_modules/utils
+      - cd - && cd sync-service/lambda/get_bp_readings && npm install --only=production
+      - cd - && cd sync-service/lambda/sync_bp_readings && npm install --only=production
+      - cd - && cd sync-service/lambda/sync_weight_readings && npm install --only=production
+      - cd - && cd sync-service/lambda/get_weight_readings && npm install --only=production
+      - cd - && cd sync-service/utils && mv CONSTANTS.js index.js package.json logger.js ses.js lambda.js db.js nodejs/node_modules/utils
+      - cd - && aws s3 cp static-code-analysis-report.html s3://$ENVIRONMENT-$COUNTRY_CODE-operations/static-code-report/common/Omron-Foresight-BE-Common/sync-service/$(($(date +%s) * 1000)).html || true
+      - npm run sync-service-lint
+      - chmod +x ./sync-service/test/test_runner.sh ; ./sync-service/test/test_runner.sh ${CODEBUILD_INITIATOR} || exit 1
+      - aws cloudformation package --template $INPUT_FILE --s3-bucket $S3_BUCKET --output-template config/saml/post-common-sync.yaml
+artifacts:
+  files:
+    - config/saml/post-common-sync.yaml

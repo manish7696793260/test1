@@ -1,0 +1,27 @@
+{
+	"Parameters" : {
+	  "Stage" : "prd_global",
+	  "EnvironmentType" : "prd",
+	  "Environment" : "usprd",
+	  "NotificationEmailFrom" : "awsalert@ohiomron.com",
+	  "HighPriorityAlertMail" : "highalertp3@ohiomron.com",
+	  "SecurityGroupID" : "sg-0bde490df38d84627",
+	  "PrivateSubnetID1": "subnet-04d816def32b74995",
+	  "PrivateSubnetID2": "subnet-032f354a4314167cf",
+	  "htmlFilePath" : "static-code-report/",
+	  "VitalsightReportIP": "192.168.56.94",
+	  "VitalsightReportPORT": "7071",
+	  "OFSReportIP": "192.168.56.94",
+	  "OFSReportPORT": "7071",
+	  "SpecificRegion": "us",
+	  "TermsDomainName": "usprd-omron-terms.ohiomron.com",
+	  "ArnAcmCertificate": "arn:aws:acm:us-east-1:166581790506:certificate/a16e3ba1-1970-455c-81e3-1838c073b43c",
+	  "WebACLId": "arn:aws:wafv2:us-east-1:166581790506:global/webacl/usprd-vs-cdn-waf-acl/55b8cd5a-4534-4a3f-8db4-1fe557a8aa13",
+	  "TermsBucket": "usprd-omron-terms",
+	  "VPCID": "vpc-008bfc79",
+	  "SubNetID1": "subnet-0ed15ad23d1911f62",
+	  "SubNetID2": "subnet-0e3e2010039cebc62",
+	  "RouteTableID": "rtb-0536c30de6f824aa2",
+	  "LambdaRole": "service-role/lambda_basic_execution"
+	}
+}

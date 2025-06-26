@@ -1,0 +1,16 @@
+{
+    "Parameters": {
+        "Environment" : "dev",
+        "CountryCode" : "eu",
+        "SubNetId1": "subnet-0a43f4e40a486a769",
+        "SubNetId2": "subnet-056c49b1130439e17",
+        "SecurityGroupId": "sg-0644e731df5bc0a31",
+        "VpcId": "vpc-0355c66ad4782f301",
+        "InfoLogLevel": "info, log, warn, error",
+        "LambdaRole": "eudev-common-sync-service-lambda-role",
+        "NotificationEmailFrom": "awsalert.staging@ohiomron.com",
+        "NotificationEmailTo": "awsalert.staging@ohiomron.com",
+        "DeploymentRegion": "euw1",
+        "Prefix": "eudev-euw1"
+    }
+}

@@ -1,0 +1,15 @@
+{
+  "name": "get_bp_readings",
+  "version": "1.0.0",
+  "description": "Common API for fetching BP readings",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Omron",
+  "license": "ISC",
+  "dependencies": {
+    "joi": "^17.9.2"   
+  }
+}

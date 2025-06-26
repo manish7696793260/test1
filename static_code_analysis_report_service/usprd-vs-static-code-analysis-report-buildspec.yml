@@ -1,0 +1,25 @@
+version: 0.2
+phases:
+  pre_build:
+    commands:
+      - echo Installing source NPM dependencies...
+      - echo "Copying appspec.yml..."
+      - cp static_code_analysis_report_service/usprd-vs-static-code-analysis-report-appspec.yml appspec.yml
+      - echo "Copying environment file prd.env..."
+      - cp static_code_analysis_report_service/CONFIG/VITALSIGHT/US/PRD.env .env 
+      - echo "Checking for code-artifact-connect.sh..."
+      - pwd
+      - cd static_code_analysis_report_service && chmod +x code-artifact-connect.sh && ./code-artifact-connect.sh && npm install
+      
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Compiling the Node.js code
+      
+  post_build:
+    commands:
+      - echo Build completed on `date`
+artifacts:
+  files:
+    - static_code_analysis_report_service/**/*
+    - appspec.yml

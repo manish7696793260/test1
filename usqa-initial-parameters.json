@@ -1,0 +1,27 @@
+{
+	"Parameters" : {
+	  "Stage" : "qa_global",
+	  "EnvironmentType" : "qa",
+	  "Environment" : "usqa",
+	  "NotificationEmailFrom" : "awsalert.staging@ohiomron.com",
+	  "HighPriorityAlertMail" : "awsalert.staging@ohiomron.com",
+	  "SecurityGroupID" : "sg-0d47ef0bc53fd028d",
+	  "PrivateSubnetID1": "subnet-0fdfaacbec53135c7",
+	  "PrivateSubnetID2": "subnet-016c2df697f7acf4a",
+	  "htmlFilePath" : "static-code-report/",
+	  "VitalsightReportIP": "10.0.0.23",
+	  "VitalsightReportPORT": "7071",
+	  "OFSReportIP": "10.0.0.23",
+	  "OFSReportPORT": "7071",
+	  "SpecificRegion": "us",
+	  "TermsDomainName": "usnp-omron-terms.ohiomron.com",
+	  "ArnAcmCertificate": "arn:aws:acm:us-east-1:689344065739:certificate/d07afa89-5d71-4809-9099-4744bd76dfb8",
+	  "WebACLId": "arn:aws:wafv2:us-east-1:689344065739:global/webacl/usstg-vs-cdn-waf-acl/71fdb238-4443-40d6-be42-138b77fc7bbc",
+	  "TermsBucket": "usnp-omron-terms",
+	  "VPCID": "vpc-0dc07590f943f80c2",
+	  "SubNetID1": "subnet-0d8f4660e0069e88d",
+	  "SubNetID2": "subnet-01b2163505bcaa8f0",
+	  "RouteTableID": "rtb-01599f1b2fcb6f297",
+	  "LambdaRole": "usqa-omron-foresight-be-common-lambda-role"
+	}
+}

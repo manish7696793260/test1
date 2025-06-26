@@ -1,0 +1,56 @@
+{
+    "name": "omron-foresight-be-common",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "auth-service-test": "mocha ./auth-service/test/test.js --color=false --parallel=true",
+        "auth-service-coverage": "nyc --reporter=lcov --reporter=text-summary -x='./auth-service/**/test/**' npm run auth-service-test",
+        "auth-service-lint": "eslint './**/*.js'",
+        "reporter": "eslint './**/*.js' --format=node_modules/eslint-detailed-reporter/lib/detailed.js --output-file=static-code-analysis-report.html",
+        "reporter-sync": "eslint './sync-service/**/*.js' --format=node_modules/eslint-detailed-reporter/lib/detailed.js --output-file=static-code-analysis-report.html",
+        "sync-service-test": "mocha ./sync-service/test/test.js --color=false --parallel=true",
+        "sync-service-coverage": "nyc --reporter=lcov --reporter=text-summary -x='./sync-service/**/test/**' npm run sync-service-test",
+        "sync-service-lint": "eslint './sync-service/**/*.js'"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/OmronHealthCare-OHI/Omron-Foresight-BE-Common.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/OmronHealthCare-OHI/Omron-Foresight-BE-Common/issues"
+    },
+    "homepage": "https://github.com/OmronHealthCare-OHI/Omron-Foresight-BE-Common#readme",
+    "devDependencies": {
+        "eslint": "~7.8.1",
+        "eslint-config-standard": "~5.3.5",
+        "eslint-detailed-reporter": "~0.9.0",
+        "eslint-plugin-import": "~2.28.0",
+        "eslint-plugin-node": "~11.1.0",
+        "eslint-plugin-promise": "~6.1.1",
+        "eslint-plugin-security": "~1.7.1",
+        "eslint-plugin-standard": "~2.0.1",
+        "husky": "~4.2.1",
+        "lint-staged": "~13.2.3",
+        "prettier-eslint": "~15.0.1",
+        "prettier-eslint-cli": "~7.1.0",
+        "mocha": "^10.0.0",
+        "mock-require": "^3.0.3",
+        "nyc": "^15.1.0",
+        "chai": "^4.3.6"
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "lint-staged"
+        }
+    },
+    "lint-staged": {
+        "*.(ts|js)": [
+            "eslint ./**/*.js"
+        ]
+    }
+}
