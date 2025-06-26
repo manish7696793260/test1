@@ -65,14 +65,14 @@ common_initial_non_prd_additional_tags= {
   }
 
 
-# Cloudfront Manual Variables                                            
+# Cloudfront Manual Variables
 existing_waf_name=""                                                   #  Update required
 scope="CLOUDFRONT"
 
 
 ##--VPC Module Variable
-vpc_id = "vpc-0dc07590f943f80c2"                                           #  Update required
-nat_gateway_id = "nat-02c647a23e663dfb3" 
+vpc_id = "vpc-4ea74529"                                           #  Update required
+nat_gateway_id = "nat-02c647a23e663dfb3"
 existing_subnet_id = ""                                                    #  Update required(Need to pass existing public subnet id for nat creation)
 internet_gateway_id = "igw-0c79bf7dc65577715"                              #  Update required
 existing_api_interface_endpoint_id = "vpce-09e1d500cd3076d74"
@@ -130,14 +130,14 @@ interface_endpoint_security_group = [
 
 ##--S3 Module Variables
 s3_buckets_config = {
-  "common-s3" = {
-    bucket_name       = "common-s3" # Ensure globally unique, including location context
+  "common-s3-manish" = {
+    bucket_name       = "common-s3-manish" # Ensure globally unique, including location context
     bucket_versioning = "Disabled"
     tag="default_additional_tags"
     lifecycle_rules = [
        { id = "delete-mobile-automated-ut-reports", prefix = "operations/automated-ut-reports/mobile/", days = 90 },
        { id = "delete-eslint-reports", prefix = "operations/static-code-report/", days = 180 }
-    
+
     ]
   }
 
@@ -147,17 +147,17 @@ s3_buckets_config = {
 
 ##--Cloudfront Module Variables
 cloudfront_config = {
-  "common-s3" = {
-    bucket_name = "common-s3"                    # Note if existing bucket is being passed then make sure it should be in same region as aws_region variable
-    cloudfront_oac_name = "common-s3-oac"
+  "common-s3-manish" = {
+    bucket_name = "common-s3-manish"                    # Note if existing bucket is being passed then make sure it should be in same region as aws_region variable
+    cloudfront_oac_name = "common-s3-manish-oac"
     default_certificate = false                                      #  Update required
     path = "terms"
     no_domain_prefix = true                                        #  Update required
-    no_bucket_prefix = false    
+    no_bucket_prefix = false
     acm_certificate_domain = "dev.us.ohiomron.com"                                      #  Update required
     existing_domain_name  = "dev.us.ohiomron.com"                   #  Update required
     subdomain_name = "common-terms-cdn.dev.us.ohiomron.com"                #  Update required
-    ttl  = "60" 
+    ttl  = "60"
     tag="default_additional_tags"                                                    #  Update required
   }
 }
@@ -184,7 +184,7 @@ iam_role_config = {
   assume_role_policy_template_path = "./../resource-policy-template/iam-assume-role-policy-template/lambda-assume-role-policy.tpl"
   tag="common_initial_additional_tags"
   }
-} 
+}
 
 
 
@@ -332,22 +332,22 @@ iam_policy_config = {
 inbound_rules = [
  {
     rule_number = 100
-    protocol    = "-1"   
+    protocol    = "-1"
     rule_action = "allow"
     cidr_block  = "0.0.0.0/0"
-    from_port   = 0      
-    to_port     = 0      
+    from_port   = 0
+    to_port     = 0
   }
 ]
 
 outbound_rules = [
   {
     rule_number = 100
-    protocol    = "-1"   
+    protocol    = "-1"
     rule_action = "allow"
     cidr_block  = "0.0.0.0/0"
-    from_port   = 0      
-    to_port     = 0      
+    from_port   = 0
+    to_port     = 0
   }
 ]
 
