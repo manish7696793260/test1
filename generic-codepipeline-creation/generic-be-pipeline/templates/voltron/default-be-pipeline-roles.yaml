@@ -1,0 +1,285 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Common resources for application deployed to Lambda
+Parameters:
+  AppName:
+    Type: String
+    Description: Name of the application.
+    MinLength: "1"
+    MaxLength: "100"
+Resources:
+  CodeBuildTrustRole:
+    Description: Creating service role in IAM for AWS CodeBuild
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${AppName}-codebuild-role"
+      AssumeRolePolicyDocument:
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service: [codebuild.amazonaws.com]
+          Action: sts:AssumeRole
+      Path: /
+  CodeBuildRolePolicy:
+    Type: AWS::IAM::Policy
+    DependsOn: CodeBuildTrustRole
+    Description: Setting IAM policy for the service role for AWS CodeBuild
+    Properties:
+      PolicyName: CodeBuildRolePolicy
+      PolicyDocument:
+        Statement:
+          - Action:
+              - s3:*
+            Resource:
+              - !Sub "arn:aws:s3:::regionenv*"
+              - !Sub "arn:aws:s3:::environment_variable*"
+            Effect: Allow
+          - Action:
+              - s3:*
+            Resource:
+              - !Sub "arn:aws:s3:::ocm-static-environment_variable"
+              - !Sub "arn:aws:s3:::ocm-static-environment_variable/*"
+              - !Sub "arn:aws:s3:::lambda-layers-us"
+              - !Sub "arn:aws:s3:::lambda-layers-us/*"
+              - !Sub "arn:aws:s3:::omron-documentation"
+              - !Sub "arn:aws:s3:::omron-documentation/*"
+              - !Sub "arn:aws:s3:::ocm-static-environment_variable-eu*"
+              - !Sub "arn:aws:s3:::ocm-static-environment_variable-eu/*"
+              - !Sub "arn:aws:s3:::lambda-layers-eu-environment_variable*"
+              - !Sub "arn:aws:s3:::lambda-layers-eu-environment_variable/*"
+              - !Sub "arn:aws:s3:::lambda-layers-environment_variable*"
+              - !Sub "arn:aws:s3:::lambda-layers-environment_variable/*"
+              - !Sub "arn:aws:s3:::lambda-layers-environment_variable-eu*"
+              - !Sub "arn:aws:s3:::lambda-layers-environment_variable-eu/*"
+            Effect: Allow
+          - Effect: Allow
+            Resource:
+              - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/regionenv*"
+              - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/environment_variable*"
+              - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:regionenv*"
+              - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:environment_variable*"
+            Action:
+              - logs:*
+          - Effect: Allow
+            Resource:
+              - !Sub "arn:aws:kms:${AWS::Region}:${AWS::AccountId}:key/*"
+            Action:
+              - kms:*
+          - Effect: Allow
+            Resource:
+              - !Sub "arn:aws:ses:${AWS::Region}:${AWS::AccountId}:identity/*"
+            Action:
+              - ses:SendEmail
+          - Effect: Allow
+            Resource:
+              - !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/regionenv*"
+              - !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/environment_variable*"
+            Action:
+              - dynamodb:*
+          - Effect: Allow
+            Resource:
+              - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:regionenv*"
+              - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:environment_variable*"
+              - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:layer:regionenv*"
+              - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:layer:environment_variable*"
+            Action:
+              - lambda:*
+          - Effect: Allow
+            Resource:
+              - !Sub "arn:aws:codeartifact:${AWS::Region}:${AWS::AccountId}:domain*"
+              - !Sub "arn:aws:codeartifact:${AWS::Region}:${AWS::AccountId}:repository*"
+              - !Sub "arn:aws:codeartifact:${AWS::Region}:${AWS::AccountId}:package*"
+            Action:
+              - codeartifact:*
+          - Effect: Allow
+            Action: sts:GetServiceBearerToken
+            Resource: 
+              - !Sub "arn:aws:sts::${AWS::AccountId}:assumed-role/*"
+            Condition:
+                StringEquals:
+                   "sts:AWSServiceName": "codeartifact.amazonaws.com"
+      Roles: [!Ref CodeBuildTrustRole]
+  CloudFormationTrustRole:
+    Description: Creating service role in IAM for AWS CloudFormation
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${AppName}-cloudformation-role"
+      AssumeRolePolicyDocument:
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service: [cloudformation.amazonaws.com]
+          Action: sts:AssumeRole
+      Path: /
+  CloudFormationRolePolicy:
+    Type: AWS::IAM::Policy
+    DependsOn: CloudFormationTrustRole
+    Description: Setting IAM policy for the service role for AWS CloudFormation
+    Properties:
+      PolicyName: CloudFormationRolePolicy
+      PolicyDocument:
+        Statement:
+          - Action:
+              - s3:PutObject
+            Resource:
+              - !Sub "arn:aws:s3:::regionenv*"
+              - !Sub "arn:aws:s3:::environment_variable*"
+            Effect: Allow
+          - Action:
+              - lambda:*
+            Resource:
+              - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:regionenv*"
+              - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:environment_variable*"
+              - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:layer:regionenv*"
+              - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:layer:environment_variable*"
+              - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:usstg-global-api-4xx-5xx-error-handler*"
+              - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:layer:qpdf-environment_variable-layer*"
+              - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:usstg-global-api-lambda-trigger-backup*"
+              - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:eustg-global-api-lambda-trigger-backup*"
+              - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:eustg-global-api-4xx-5xx-error-handler*"
+              - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:layer:qpdf-staging-layer*"
+              - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:layer:qpdf-dev-layer*"
+              - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:layer:prd-qpdf-layer*"
+              - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:layer:qpdf-prd-layer*"
+              - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:layer:qpdf-layer*"
+            Effect: Allow
+          - Action:
+              - cloudformation:CreateChangeSet
+            Resource: !Sub "arn:aws:cloudformation:${AWS::Region}:aws:transform/Serverless-2016-10-31"
+            Effect: Allow
+          - Action:
+              - events:*
+            Resource:
+              - !Sub "arn:aws:events:${AWS::Region}:${AWS::AccountId}:rule/regionenv*"
+              - !Sub "arn:aws:events:${AWS::Region}:${AWS::AccountId}:rule/environment_variable*"
+            Effect: Allow
+          - Action:
+              - iam:*
+            Resource:
+              - !Sub "arn:aws:iam::${AWS::AccountId}:role/regionenv*"
+              - !Sub "arn:aws:iam::${AWS::AccountId}:role/environment_variable*"
+              - !Sub "arn:aws:iam::${AWS::AccountId}:role/lambda_basic_execution*"
+              - !Sub "arn:aws:iam::${AWS::AccountId}:role/service-role/lambda_basic_execution*"
+            Effect: Allow
+          - Action:
+              - states:DescribeStateMachine
+              - SNS:SetTopicAttributes
+            Resource:
+              - !Sub "arn:aws:states:${AWS::Region}:${AWS::AccountId}:stateMachine:*"
+              - !Sub "arn:aws:sns:${AWS::Region}:${AWS::AccountId}:*"
+            Effect: Allow
+          - Action:
+              - s3:Get*
+            Resource:
+              - !Sub "arn:aws:s3:::regionenv*"
+              - !Sub "arn:aws:s3:::environment_variable*"
+            Effect: Allow
+          - Effect: Allow
+            Resource:
+              - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/regionenv*"
+              - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/environment_variable*"
+              - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:regionenv*"
+              - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:environment_variable*"
+            Action:
+              - logs:*
+            Resource:
+              - !Sub "arn:aws:kms:${AWS::Region}:${AWS::AccountId}:key/*"
+            Action:
+              - kms:*
+          - Effect: Allow
+            Resource:
+              - !Sub "arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:regionenv*"
+              - !Sub "arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:environment_variable*"
+            Action:
+              - secretsmanager:*
+          - Effect: Allow
+            Resource: "*"
+            Action:
+              - ec2:*
+          - Effect: Allow
+            Resource:
+              - !Sub "arn:aws:apigateway:${AWS::Region}::/*"
+            Action:
+              - apigateway:*
+          - Effect: Allow
+            Resource:
+              - !Sub "arn:aws:cloudwatch:${AWS::Region}:${AWS::AccountId}:alarm:regionenv*"
+              - !Sub "arn:aws:cloudwatch:${AWS::Region}:${AWS::AccountId}:alarm:environment_variable*"
+            Action:
+              - cloudwatch:*
+          - Effect: Allow
+            Resource:
+              - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/regionenv*"
+              - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/environment_variable*"
+              - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:regionenv*"
+              - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:environment_variable*"
+            Action:
+              - logs:*
+      Roles: [!Ref CloudFormationTrustRole]
+  CodePipelineTrustRole:
+    Description: Creating service role in IAM for AWS CodePipeline
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${AppName}-codepipeline-role"
+      AssumeRolePolicyDocument:
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service: [codepipeline.amazonaws.com]
+          Action: sts:AssumeRole
+      Path: /
+  CodePipelineRolePolicy:
+    Type: AWS::IAM::Policy
+    DependsOn: CodePipelineTrustRole
+    Description: Setting IAM policy for the service role for AWS CodePipeline
+    Properties:
+      PolicyName: CodePipelineRolePolicy
+      PolicyDocument:
+        Statement:
+          - Action:
+              - s3:*
+            Resource:
+              - !Sub "arn:aws:s3:::regionenv*"
+              - !Sub "arn:aws:s3:::environment_variable*"
+            Effect: Allow
+          - Effect: Allow
+            Action: codestar-connections:UseConnection
+            Resource:
+              - !Sub "arn:aws:codestar-connections:${AWS::Region}:${AWS::AccountId}:connection/*"
+          - Action:
+              - codebuild:StartBuild
+              - codebuild:BatchGetBuilds
+            Resource:
+              - !Sub "arn:aws:codebuild:${AWS::Region}:${AWS::AccountId}:project/*"
+            Effect: Allow
+          - Action:
+              - cloudformation:DescribeStacks
+              - cloudformation:DescribeChangeSet
+              - cloudformation:DeleteChangeSet
+              - cloudformation:CreateChangeSet
+              - cloudformation:ExecuteChangeSet
+            Resource:
+              - !Sub "arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/regionenv*"
+              - !Sub "arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/environment_variable*"
+            Effect: Allow
+          - Action:
+              - iam:PassRole
+            Resource:
+              - !Sub "arn:aws:iam::${AWS::AccountId}:role/*"
+            Effect: Allow
+          - Action:
+              - s3:Get*
+            Resource:
+              - !Sub "arn:aws:s3:::regionenv*"
+              - !Sub "arn:aws:s3:::environment_variable*"
+            Effect: Allow
+      Roles: [!Ref CodePipelineTrustRole]
+Outputs:
+  CodePipelineRole:
+    Description: "Role for code pipeline"
+    Value: !GetAtt CodePipelineTrustRole.Arn
+  CloudformationDeployRole:
+    Description: "Role for cloudformation to deploy with."
+    Value: !GetAtt CloudFormationTrustRole.Arn
+  CodeBuildRole:
+    Description: "Role for code build to build"
+    Value: !GetAtt CodeBuildTrustRole.Arn

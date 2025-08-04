@@ -1,0 +1,119 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Main template for a CI/CD backend job deployment."
+Parameters:
+  AppName:
+    Type: String
+    Description: Name of the application.
+    MinLength: "1"
+    MaxLength: "80"
+    AllowedPattern: "[A-Za-z0-9-]+"
+    ConstraintDescription: Malformed input parameter. AppName must only contain upper and lower case letters, numbers, and -.
+  CodeBuildImage:
+    Type: String
+    Default: "aws/codebuild/standard:7.0"
+    Description: Image used for CodeBuild project.
+  BuildSpecFileName:
+    Type: String
+    Description: Name of buildspec file for CodeBuild project.
+  GitHubRepoName:
+    Type: String
+    Description: The GitHub repo name
+  GitHubRepoBranch:
+    Type: String
+    Description: The GitHub repo branch code pipelines should watch for changes on
+    Default: master
+  GitHubUser:
+    Type: String
+    Description: GitHub UserName. This username must have access to the GitHubToken.
+  GitHubToken:
+    NoEcho: true
+    Type: String
+    Description: "Secret. OAuthToken with access to Repo. Long string of characters and digits. Go to https://github.com/settings/tokens"
+  RolesTemplateURL:
+    Type: String
+    Description: "URL of the serverless roles template stored in S3"
+  CodePipelineTemplateURL:
+    Type: String
+    Description: "URL of the CodePipeline template stored in S3"
+  CodepipelineApplicationName:
+    Type: String
+    Description: "Name of Application Group for CodeDeploy"
+  CodepiplineDeploymentGroupName:
+    Type: String
+    Description: "Name of Deployment Group for CodeDeploy"
+  CountryCode:
+    Type: String
+    Description: Country code environment variable.
+  Environment:
+    Type: String
+    Description: Environment variable.
+  DeploymentRegion:
+    Type: String
+    Description: Deployment Region environment variable.
+  Project:
+    Type: String
+    Description: Project environment variable.
+  EnvNames:
+    Type: String
+    Description: Environment Namesvariable.
+  ProjectName:
+    Type: String
+    Description: Project Name environment variable.
+  Config:
+    Type: String
+    Description: Config environment variable.
+  ScriptsFolder:
+    Type: String
+    Description: Scripts folder environment variable.
+  AppspecFolder:
+    Type: String
+    Description: App spec Environment variable.
+  Email:
+    Type: String
+    Description: Email environment variable.
+  CronTime:
+    Type: String
+    Description: Cron Time environment variable.
+  DataDir:
+    Type: String
+    Description: Data Directory variable.
+  ec2server:
+    Type: String
+    Description: EC2 Server variable.
+Resources:
+  ServerlessRoles:
+    Type: "AWS::CloudFormation::Stack"
+    Properties:
+      Parameters:
+        AppName: !Ref AppName
+      TemplateURL: !Ref RolesTemplateURL
+  ServerlessPipeline:
+    Type: "AWS::CloudFormation::Stack"
+    DependsOn: [ServerlessRoles]
+    Properties:
+      Parameters:
+        AppName: !Ref AppName
+        CodeBuildImage: !Ref CodeBuildImage
+        GitHubRepoName: !Ref GitHubRepoName
+        GitHubRepoBranch: !Ref GitHubRepoBranch
+        GitHubUser: !Ref GitHubUser
+        GitHubToken: !Ref GitHubToken
+        BuildSpecFileName: !Ref BuildSpecFileName
+        CodePipelineRole: !GetAtt ServerlessRoles.Outputs.CodePipelineRole
+        CodeBuildRole: !GetAtt ServerlessRoles.Outputs.CodeBuildRole
+        CodepipelineApplicationName: !Ref CodepipelineApplicationName
+        CodepiplineDeploymentGroupName: !Ref CodepiplineDeploymentGroupName
+        CountryCode: !Ref CountryCode
+        Environment: !Ref Environment
+        DeploymentRegion: !Ref DeploymentRegion
+        Project: !Ref Project
+        EnvNames: !Ref EnvNames
+        ProjectName: !Ref ProjectName
+        Config: !Ref Config
+        ScriptsFolder: !Ref ScriptsFolder
+        AppspecFolder: !Ref AppspecFolder
+        Email: !Ref Email
+        DataDir: !Ref DataDir
+        CronTime: !Ref CronTime
+        ec2server: !Ref ec2server
+      TemplateURL: !Ref CodePipelineTemplateURL

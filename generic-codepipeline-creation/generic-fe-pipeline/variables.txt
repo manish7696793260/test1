@@ -1,0 +1,20 @@
+region=${REGION}
+environment=${environment}
+env=$region$environment
+project=${PROJECT} #Name of pipeline excluding env and pipeline
+BuildSpecFileName=${BUILDSPECFILENAME}                                 #path of buildspec.yml file
+BucketName="damn8"
+
+###Automated
+GitHubRepoBranch="$env"                                                                    #github branch
+GitHubRepoName="Omron-Reports"
+
+
+#TAGS
+
+ohiname=${OHINAME}
+ohiproject=${OHIPROJECT}
+ohiapplication=${OHIAPPLICATION}
+ohimodule=${OHIMODULE}
+ohiapplicationrole=${OHIAPPLICATIONROLE}
+ohienvironment=${OHIENVIRONMENT}

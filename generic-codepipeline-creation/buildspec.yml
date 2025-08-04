@@ -1,0 +1,110 @@
+version: 0.2
+phases:
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo $CODEBUILD_INITIATOR
+      - |
+        if expr "${CODEBUILD_INITIATOR}" : ".*codepipeline/usv1-generic-fe-create-pipeline" >/dev/null; then
+         cd generic-codepipeline-creation/generic-fe-pipeline; chmod +x fe-pipeline-deploy.sh; ./fe-pipeline-deploy.sh; else
+         echo "not US FE";
+        fi
+      - |
+        if expr "${CODEBUILD_INITIATOR}" : ".*codepipeline/usv1-generic-ec2-create-pipeline" >/dev/null; then
+         cd generic-codepipeline-creation/generic-ec2-pipeline; chmod +x ec2-code-deploy-create.sh; chmod +x ec2-pipeline-deploy.sh; ./ec2-code-deploy-create.sh; ./ec2-pipeline-deploy.sh; else
+         echo "not US EC2";
+        fi
+      - |
+        if expr "${CODEBUILD_INITIATOR}" : ".*codepipeline/usv1-generic-be-ec2-create-pipeline" >/dev/null; then
+         cd generic-codepipeline-creation/generic-be-ec2-pipeline; chmod +x be-ec2-code-deploy-create.sh; chmod +x be-ec2-pipeline-deploy.sh; ./be-ec2-code-deploy-create.sh; ./be-ec2-pipeline-deploy.sh; else
+         echo "not US BE-EC2";
+        fi
+      - |
+        if expr "${CODEBUILD_INITIATOR}" : ".*codepipeline/usv1-generic-be-create-pipeline" >/dev/null; then
+         cd generic-codepipeline-creation/generic-be-pipeline; chmod +x be-pipeline-deploy.sh; ./be-pipeline-deploy.sh; else
+         echo "not US BE";
+        fi
+      - |
+        if expr "${CODEBUILD_INITIATOR}" : ".*codepipeline/usv1-generic-init-create-pipeline" >/dev/null; then
+         cd generic-codepipeline-creation/generic-init-pipeline; chmod +x init-pipeline-deploy.sh; ./init-pipeline-deploy.sh; else
+         echo "not US INIT";
+        fi
+      - |
+        if expr "${CODEBUILD_INITIATOR}" : ".*codepipeline/euv1-generic-fe-create-pipeline" >/dev/null; then
+         cd generic-codepipeline-creation/generic-fe-pipeline; chmod +x fe-pipeline-deploy.sh; ./fe-pipeline-deploy.sh; else
+         echo "not EU FE";
+        fi
+      - |
+        if expr "${CODEBUILD_INITIATOR}" : ".*codepipeline/euv1-generic-ec2-create-pipeline" >/dev/null; then
+         cd generic-codepipeline-creation/generic-ec2-pipeline; chmod +x ec2-code-deploy-create.sh; chmod +x ec2-pipeline-deploy.sh; ./ec2-code-deploy-create.sh; ./ec2-pipeline-deploy.sh; else
+         echo "not EU EC2";
+        fi
+      - |
+        if expr "${CODEBUILD_INITIATOR}" : ".*codepipeline/euv1-generic-be-ec2-create-pipeline" >/dev/null; then
+         cd generic-codepipeline-creation/generic-be-ec2-pipeline; chmod +x be-ec2-code-deploy-create.sh; chmod +x be-ec2-pipeline-deploy.sh; ./be-ec2-code-deploy-create.sh; ./be-ec2-pipeline-deploy.sh; else
+         echo "not EU BE-EC2";
+        fi
+      - |
+        if expr "${CODEBUILD_INITIATOR}" : ".*codepipeline/euv1-generic-be-create-pipeline" >/dev/null; then
+         cd generic-codepipeline-creation/generic-be-pipeline; chmod +x be-pipeline-deploy.sh; ./be-pipeline-deploy.sh; else
+         echo "not EU BE";
+        fi
+      - |
+        if expr "${CODEBUILD_INITIATOR}" : ".*codepipeline/euv1-generic-init-create-pipeline" >/dev/null; then
+         cd generic-codepipeline-creation/generic-init-pipeline; chmod +x init-pipeline-deploy.sh; ./init-pipeline-deploy.sh; else
+         echo "not EU INIT";
+        fi
+      - |
+        if expr "${CODEBUILD_INITIATOR}" : ".*codepipeline/usprdv1-generic-fe-create-pipeline" >/dev/null; then
+         cd generic-codepipeline-creation/generic-fe-pipeline; chmod +x fe-pipeline-deploy.sh; ./fe-pipeline-deploy.sh; else
+         echo "not US FE";
+        fi
+      - |
+        if expr "${CODEBUILD_INITIATOR}" : ".*codepipeline/usprdv1-generic-ec2-create-pipeline" >/dev/null; then
+         cd generic-codepipeline-creation/generic-ec2-pipeline; chmod +x ec2-code-deploy-create.sh; chmod +x ec2-pipeline-deploy.sh; ./ec2-code-deploy-create.sh; ./ec2-pipeline-deploy.sh; else
+         echo "not US EC2";
+        fi
+      - |
+        if expr "${CODEBUILD_INITIATOR}" : ".*codepipeline/usprdv1-generic-be-ec2-create-pipeline" >/dev/null; then
+         cd generic-codepipeline-creation/generic-be-ec2-pipeline; chmod +x be-ec2-code-deploy-create.sh; chmod +x be-ec2-pipeline-deploy.sh; ./be-ec2-code-deploy-create.sh; ./be-ec2-pipeline-deploy.sh; else
+         echo "not US BE-EC2";
+        fi
+      - |
+        if expr "${CODEBUILD_INITIATOR}" : ".*codepipeline/usprdv1-generic-be-create-pipeline" >/dev/null; then
+         cd generic-codepipeline-creation/generic-be-pipeline; chmod +x be-pipeline-deploy.sh; ./be-pipeline-deploy.sh; else
+         echo "not US BE";
+        fi
+      - |
+        if expr "${CODEBUILD_INITIATOR}" : ".*codepipeline/usprdv1-generic-init-create-pipeline" >/dev/null; then
+         cd generic-codepipeline-creation/generic-init-pipeline; chmod +x init-pipeline-deploy.sh; ./init-pipeline-deploy.sh; else
+         echo "not US INIT";
+        fi
+      - |
+        if expr "${CODEBUILD_INITIATOR}" : ".*codepipeline/euprdv1-generic-fe-create-pipeline" >/dev/null; then
+         cd generic-codepipeline-creation/generic-fe-pipeline; chmod +x fe-pipeline-deploy.sh; ./fe-pipeline-deploy.sh; else
+         echo "not EU FE";
+        fi
+      - |
+        if expr "${CODEBUILD_INITIATOR}" : ".*codepipeline/euprdv1-generic-ec2-create-pipeline" >/dev/null; then
+         cd generic-codepipeline-creation/generic-ec2-pipeline; chmod +x ec2-code-deploy-create.sh; chmod +x ec2-pipeline-deploy.sh; ./ec2-code-deploy-create.sh; ./ec2-pipeline-deploy.sh; else
+         echo "not EU EC2";
+        fi
+      - |
+        if expr "${CODEBUILD_INITIATOR}" : ".*codepipeline/euprdv1-generic-be-ec2-create-pipeline" >/dev/null; then
+         cd generic-codepipeline-creation/generic-be-ec2-pipeline; chmod +x be-ec2-code-deploy-create.sh; chmod +x be-ec2-pipeline-deploy.sh; ./be-ec2-code-deploy-create.sh; ./be-ec2-pipeline-deploy.sh; else
+         echo "not EU BE-EC2";
+        fi
+      - |
+        if expr "${CODEBUILD_INITIATOR}" : ".*codepipeline/euprdv1-generic-be-create-pipeline" >/dev/null; then
+         cd generic-codepipeline-creation/generic-be-pipeline; chmod +x be-pipeline-deploy.sh; ./be-pipeline-deploy.sh; else
+         echo "not EU BE";
+        fi
+      - |
+        if expr "${CODEBUILD_INITIATOR}" : ".*codepipeline/euprdv1-generic-init-create-pipeline" >/dev/null; then
+         cd generic-codepipeline-creation/generic-init-pipeline; chmod +x init-pipeline-deploy.sh; ./init-pipeline-deploy.sh; else
+         echo "not EU INIT";
+        fi
+
+  post_build:
+    commands:
+      - echo Build completed on `date`

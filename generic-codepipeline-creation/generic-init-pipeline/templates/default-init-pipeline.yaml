@@ -1,0 +1,162 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Template for full CI/CD serverless applications."
+Parameters:
+  AppName:
+    Type: String
+    Description: Name of the application.
+    MinLength: "1"
+    MaxLength: "80"
+    AllowedPattern: "[A-Za-z0-9-]+"
+    ConstraintDescription: Malformed input parameter. AppName must only contain upper and lower case letters, numbers, and -.
+  ParametersFile:
+    Type: String
+    Description: The filename for the cloudformation parameters.
+  SAMInputFile:
+    Type: String
+    Description: The filename for the SAM file.
+  SAMOutputFile:
+    Type: String
+    Description: The filename for the output SAM file from the buildspec file.
+  CodeBuildImage:
+    Type: String
+    Default: "aws/codebuild/standard:7.0"
+    Description: Image used for CodeBuild project.
+  BuildSpecFileNameForAPI:
+    Type: String
+    Description: Name of buildspec file for CodeBuild project.
+  GitHubRepoName:
+    Type: String
+    Description: The GitHub repo name
+  GitHubRepoBranch:
+    Type: String
+    Description: The GitHub repo branch code pipelines should watch for changes on
+  GitHubUser:
+    Type: String
+    Description: GitHub UserName. This username must have access to the GitHubToken.
+  GitHubToken:
+    NoEcho: true
+    Type: String
+    Description: "Secret. OAuthToken with access to Repo. Long string of characters and digits. Go to https://github.com/settings/tokens"
+  CodePipelineRole:
+    Type: String
+    Description: Role the pipeline will use
+  CloudformationRole:
+    Type: String
+    Description: Role for cloudformation
+  CodeBuildRole:
+    Type: String
+    Description: Role for code build
+Resources:
+  CodeBuildProject:
+    Description: Creating AWS CodeBuild project
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Artifacts:
+        Type: CODEPIPELINE
+      Description: !Sub "Building stage for ${AppName}."
+      Environment:
+        ComputeType: BUILD_GENERAL1_SMALL
+        EnvironmentVariables:
+          - Name: S3_BUCKET
+            Value: regionenv-cloudformation-artifacts
+          - Name: API_ENV
+            Value: region-env
+          - Name: CLOUDFRONT_DIST
+            Value: E3QFZ52MZ35NN4
+        Image: !Ref CodeBuildImage
+        Type: LINUX_CONTAINER
+      Name: !Sub "${AppName}-build-project"
+      ServiceRole: !Ref CodeBuildRole
+      Source:
+        Type: CODEPIPELINE
+        BuildSpec: !Ref BuildSpecFileNameForAPI
+      Tags:
+        - Key: app-name
+          Value: !Ref AppName
+      TimeoutInMinutes: 15
+  ProjectPipeline:
+    DependsOn: [CodeBuildProject]
+    Description: Creating a deployment pipeline for your project in AWS CodePipeline
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      Name: !Sub "${AppName}-pipeline"
+      RoleArn: !Ref CodePipelineRole
+      Stages:
+      - Name: Source
+        Actions:
+        - Name: source
+          InputArtifacts: []
+          ActionTypeId:
+            Version: "1"
+            Category: Source
+            Owner: ThirdParty
+            Provider: GitHub
+          OutputArtifacts:
+          - Name: !Sub "${AppName}-SourceArtifact"
+          Configuration:
+            Repo: !Ref GitHubRepoName
+            Branch: !Ref GitHubRepoBranch
+            OAuthToken: !Ref GitHubToken
+            Owner: !Ref GitHubUser
+          RunOrder: 1
+      - Name: Build
+        Actions:
+        - Name: build-from-source
+          InputArtifacts:
+          - Name: !Sub "${AppName}-SourceArtifact"
+          ActionTypeId:
+            Category: Build
+            Owner: AWS
+            Version: "1"
+            Provider: CodeBuild
+          OutputArtifacts:
+          - Name: !Sub "${AppName}-BuildArtifact"
+          Configuration:
+            ProjectName: !Sub "${AppName}-build-project"
+          RunOrder: 1
+      - Name: Deploy
+        Actions:
+        - Name: create-changeset
+          InputArtifacts:
+          - Name: !Sub "${AppName}-BuildArtifact"
+          - Name: !Sub "${AppName}-SourceArtifact"
+          ActionTypeId:
+            Category: Deploy
+            Owner: AWS
+            Version: "1"
+            Provider: CloudFormation
+          OutputArtifacts: []
+          Configuration:
+            StackName: !Sub "${AppName}-serverless-stack"
+            ActionMode: CHANGE_SET_REPLACE
+            RoleArn: !Ref CloudformationRole
+            ChangeSetName: pipeline-changeset
+            Capabilities: CAPABILITY_IAM,CAPABILITY_AUTO_EXPAND,CAPABILITY_NAMED_IAM
+            TemplatePath: !Sub "${AppName}-BuildArtifact::${SAMOutputFile}"
+            TemplateConfiguration: !Sub "${AppName}-SourceArtifact::${ParametersFile}"
+          RunOrder: 1
+        - Name: approve-changeset
+          ActionTypeId:
+            Category: Approval
+            Owner: AWS
+            Version: "1"
+            Provider: Manual
+          OutputArtifacts: []
+          RunOrder: 2
+        - Name: execute-changeset
+          ActionTypeId:
+            Category: Deploy
+            Owner: AWS
+            Version: "1"
+            Provider: CloudFormation
+          OutputArtifacts: []
+          Configuration:
+            StackName: !Sub "${AppName}-serverless-stack"
+            ActionMode: CHANGE_SET_EXECUTE
+            RoleArn: !Ref CloudformationRole
+            ChangeSetName: pipeline-changeset
+            Capabilities: CAPABILITY_IAM,CAPABILITY_AUTO_EXPAND,CAPABILITY_NAMED_IAM
+          RunOrder: 3
+      ArtifactStore:
+        Type: S3
+        Location: regionenv-cloudformation-artifacts

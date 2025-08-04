@@ -1,0 +1,47 @@
+region=${REGION}
+environment=${environment}
+env=$region$environment
+project=${PROJECT} #Name of pipeline excluding env and pipeline
+BuildSpecFileNameForAPI=${BUILDSPECFILENAME}                                 #path of buildspec.yml file
+BuildSpecFileNameForec2=${BUILDSPECFILENAMEFOREC2}
+ParametersFile=${PARAMETERSFILE}
+
+###Automated
+ApplicationName="$region-$project-ec2"                                                #EC2 CodeDeploy Application group Name
+DeploymentGroupName="$env-$project"                                              #EC2 CodeDeploy Deployment group Name
+GitHubRepoBranch="$env"                                                                    #github branch
+GitHubRepoName="Omron-Reports"
+
+
+#TAGS
+
+ohiname=${OHINAME}
+ohiproject=${OHIPROJECT}
+ohiapplication=${OHIAPPLICATION}
+ohimodule=${OHIMODULE}
+ohiapplicationrole=${OHIAPPLICATIONROLE}
+ohienvironment=${OHIENVIRONMENT}
+
+
+#deployment grp role ARN's as per region
+if [ "$env" = "usdev" -o "$env" = "usqa" -o "$env" = "usstg" -o "$env" = "usbeta" ];then
+   deploygrprole=arn:aws:iam::689344065739:role/simple-express-codedeploy          #US-staging
+   if [ "$env" = "usdev" -o "$env" = "usqa" ];then
+       ec2server="qa-ustw-cron"
+   else
+      ec2server="stg-cron-api-new"
+   fi
+elif [ "$env" = "eudev" -o "$env" = "euqa" -o "$env" = "eustg" -o "$env" = "eubeta" ];then
+   deploygrprole=arn:aws:iam::669459099715:role/stg-codedeploy-role
+     if [ "$env" = "eudev" -o "$env" = "euqa" ];then
+        ec2server="qa-crontab-eu"
+     else
+        ec2server="stg-crontab-eu"
+     fi
+elif [ "$env" = "usprd" ];then
+   deploygrprole=arn:aws:iam::852233704497:role/code-deploy-service-role
+   ec2server="Prod-Cron-Api"
+elif [ "$env" = "euprd" ];then
+   deploygrprole=arn:aws:iam::166581790506:role/code-deploy-service-role
+   ec2server="euprd-cron-api"
+fi

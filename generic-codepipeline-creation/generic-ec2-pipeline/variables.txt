@@ -1,0 +1,48 @@
+region=${REGION}
+environment_variable=${environment_variable}
+env=$region$environment_variable
+pipeline_project=${PIPELINE_PROJECT} #Name of pipeline excluding env and pipeline
+BuildSpecFileName=${BUILDSPECFILENAME}                                 #path of buildspec.yml file
+
+###Automated
+ApplicationName="$region-$pipeline_project-ec2"                                                #EC2 CodeDeploy Application group Name
+DeploymentGroupName="$env-$pipeline_project"                                              #EC2 CodeDeploy Deployment group Name
+GitHubRepoBranch="$env"                                                                    #github branch
+GitHubRepoName="Omron-Reports"
+
+
+#TAGS
+ohiproject=${OHIPROJECT}
+ohiapplication=${OHIAPPLICATION}
+ohimodule=${OHIMODULE}
+ohienvironment=${OHIENVIRONMENT}
+ohistackname=${OHISTACKNAME}
+
+#Environment Variables
+CountryCode=${COUNTRY_CODE}
+Environment=${ENVIRONMENT}
+DeploymentRegion=${DEPLOYMENT_REGION}
+Project=${PROJECT}
+EnvNames=${ENV_NAMES}
+ProjectName=${PROJECT_NAME}
+Config=${CONFIG}
+ScriptsFolder=${SCRIPTS_FOLDER}
+AppspecFolder=${APPSPEC_FOLDER}
+Email=${EMAIL}
+CronTime=${CRON_TIME}
+DataDir=${DATA_DIR}
+ProjectDetails=${PROJECT_DETAILS}
+
+#EC2 Server
+ec2server=${EC2SERVER}
+
+#deployment grp role ARN's as per region
+if [ "$env" = "usdev" -o "$env" = "usqa" -o "$env" = "usstg" -o "$env" = "usbeta" ];then
+   deploygrprole=arn:aws:iam::689344065739:role/simple-express-codedeploy          #US-staging
+elif [ "$env" = "eudev" -o "$env" = "euqa" -o "$env" = "eustg" -o "$env" = "eubeta" ];then
+   deploygrprole=arn:aws:iam::669459099715:role/stg-codedeploy-role
+elif [ "$env" = "euprd" ];then
+   deploygrprole=arn:aws:iam::852233704497:role/code-deploy-service-role
+elif [ "$env" = "usprd" ];then
+   deploygrprole=arn:aws:iam::166581790506:role/code-deploy-service-role
+fi

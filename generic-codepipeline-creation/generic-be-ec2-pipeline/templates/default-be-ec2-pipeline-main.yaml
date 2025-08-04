@@ -1,0 +1,83 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Main template for a CI/CD Serverless application."
+Parameters:
+  AppName:
+    Type: String
+    Description: Name of the application.
+    MinLength: "1"
+    MaxLength: "80"
+    AllowedPattern: "[A-Za-z0-9-]+"
+    ConstraintDescription: Malformed input parameter. AppName must only contain upper and lower case letters, numbers, and -.
+  ParametersFile:
+    Type: String
+    Description: The filename for the cloudformation parameters.
+  SAMInputFile:
+    Type: String
+    Description: The filename for the SAM file.
+  SAMOutputFile:
+    Type: String
+    Description: The filename for the output SAM file from the buildspec file.
+  CodeBuildImage:
+    Type: String
+    Default: "aws/codebuild/standard:7.0"
+    Description: Image used for CodeBuild project.
+  BuildSpecFileNameForAPI:
+    Type: String
+    Description: Name of buildspec file for CodeBuild project.
+  BuildSpecFileNameForec2:
+    Type: String
+    Description: Name of buildspec file for CodeBuild project.
+  GitHubRepoName:
+    Type: String
+    Description: The GitHub repo name.
+  GitHubRepoBranch:
+    Type: String
+    Description: The GitHub repo branch code pipelines should watch for changes on.
+  GitHubUser:
+    Type: String
+    Description: GitHub UserName. This username must have access to the GitHubToken.
+  GitHubToken:
+    NoEcho: true
+    Type: String
+    Description: Secret. OAuthToken with access to Repo. Long string of characters and digits. Go to https://github.com/settings/tokens .
+  DeploymentGroupName:
+    Type: String
+    Description: Code Deploy Deployment Group Name.
+  ApplicationName:
+    Type: String
+    Description: Code Deploy Application Group Name.
+  RolesTemplateURL:
+    Type: String
+    Description: URL of the serverless roles template stored in S3.
+  CodePipelineTemplateURL:
+    Type: String
+    Description: URL of the CodePipeline template stored in S3.
+Resources:
+  ServerlessRoles:
+    Type: "AWS::CloudFormation::Stack"
+    Properties:
+      Parameters:
+        AppName: !Ref AppName
+      TemplateURL: !Ref RolesTemplateURL
+  ServerlessPipeline:
+    Type: "AWS::CloudFormation::Stack"
+    DependsOn: [ServerlessRoles]
+    Properties:
+      Parameters:
+        AppName: !Ref AppName
+        ParametersFile: !Ref ParametersFile
+        SAMInputFile: !Ref SAMInputFile
+        SAMOutputFile: !Ref SAMOutputFile
+        CodeBuildImage: !Ref CodeBuildImage
+        BuildSpecFileNameForAPI: !Ref BuildSpecFileNameForAPI
+        BuildSpecFileNameForec2: !Ref BuildSpecFileNameForec2
+        GitHubRepoName: !Ref GitHubRepoName
+        GitHubRepoBranch: !Ref GitHubRepoBranch
+        GitHubUser: !Ref GitHubUser
+        GitHubToken: !Ref GitHubToken
+        CodePipelineRole: !GetAtt ServerlessRoles.Outputs.CodePipelineRole
+        CloudformationRole: !GetAtt ServerlessRoles.Outputs.CloudformationDeployRole
+        CodeBuildRole: !GetAtt ServerlessRoles.Outputs.CodeBuildRole
+        DeploymentGroupName: !Ref DeploymentGroupName
+        ApplicationName: !Ref ApplicationName
+      TemplateURL: !Ref CodePipelineTemplateURL
