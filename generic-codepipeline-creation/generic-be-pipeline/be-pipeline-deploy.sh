@@ -12,7 +12,7 @@ SAMOutputFile=${SAMOUTPUT}
 
 stackname=$env-$pipeline_project-pipeline
 bucket_name=myawsbucket-template
-eu_bucket_name=myawsbucket-artifacts
+eu_bucket_name=manish-dabkhera
 euprd_bucket_name=euprd-common-templates
 usprd_bucket_name=usprd-common-templates
 
