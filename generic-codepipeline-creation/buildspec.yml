@@ -30,6 +30,11 @@ phases:
          echo "not US INIT";
         fi
       - |
+        if expr "${CODEBUILD_INITIATOR}" : ".*codepipeline/usv1-generic-tf-create-pipeline" >/dev/null; then
+         cd generic-codepipeline-creation/generic-tf-pipeline; chmod +x tf-pipeline-deploy.sh; ./tf-pipeline-deploy.sh; else
+         echo "not US TF";
+        fi
+      - |
         if expr "${CODEBUILD_INITIATOR}" : ".*codepipeline/euv1-generic-fe-create-pipeline" >/dev/null; then
          cd generic-codepipeline-creation/generic-fe-pipeline; chmod +x fe-pipeline-deploy.sh; ./fe-pipeline-deploy.sh; else
          echo "not EU FE";
@@ -53,6 +58,11 @@ phases:
         if expr "${CODEBUILD_INITIATOR}" : ".*codepipeline/euv1-generic-init-create-pipeline" >/dev/null; then
          cd generic-codepipeline-creation/generic-init-pipeline; chmod +x init-pipeline-deploy.sh; ./init-pipeline-deploy.sh; else
          echo "not EU INIT";
+        fi
+      - |
+        if expr "${CODEBUILD_INITIATOR}" : ".*codepipeline/eusv1-generic-tf-create-pipeline" >/dev/null; then
+         cd generic-codepipeline-creation/generic-tf-pipeline; chmod +x tf-pipeline-deploy.sh; ./tf-pipeline-deploy.sh; else
+         echo "not EU TF";
         fi
       - |
         if expr "${CODEBUILD_INITIATOR}" : ".*codepipeline/usprdv1-generic-fe-create-pipeline" >/dev/null; then
@@ -80,6 +90,11 @@ phases:
          echo "not US INIT";
         fi
       - |
+        if expr "${CODEBUILD_INITIATOR}" : ".*codepipeline/usprdv1-generic-tf-create-pipeline" >/dev/null; then
+         cd generic-codepipeline-creation/generic-tf-pipeline; chmod +x tf-pipeline-deploy.sh; ./tf-pipeline-deploy.sh; else
+         echo "not US TF";
+        fi
+      - |
         if expr "${CODEBUILD_INITIATOR}" : ".*codepipeline/euprdv1-generic-fe-create-pipeline" >/dev/null; then
          cd generic-codepipeline-creation/generic-fe-pipeline; chmod +x fe-pipeline-deploy.sh; ./fe-pipeline-deploy.sh; else
          echo "not EU FE";
@@ -103,6 +118,16 @@ phases:
         if expr "${CODEBUILD_INITIATOR}" : ".*codepipeline/euprdv1-generic-init-create-pipeline" >/dev/null; then
          cd generic-codepipeline-creation/generic-init-pipeline; chmod +x init-pipeline-deploy.sh; ./init-pipeline-deploy.sh; else
          echo "not EU INIT";
+        fi
+      - |
+        if expr "${CODEBUILD_INITIATOR}" : ".*codepipeline/euprdv1-generic-fe-create-pipeline" >/dev/null; then
+         cd generic-codepipeline-creation/generic-fe-pipeline; chmod +x fe-pipeline-deploy.sh; ./fe-pipeline-deploy.sh; else
+         echo "not EU FE";
+        fi
+      - |
+        if expr "${CODEBUILD_INITIATOR}" : ".*codepipeline/euprdv1-generic-tf-create-pipeline" >/dev/null; then
+         cd generic-codepipeline-creation/generic-tf-pipeline; chmod +x tf-pipeline-deploy.sh; ./tf-pipeline-deploy.sh; else
+         echo "not EU TF";
         fi
 
   post_build:
