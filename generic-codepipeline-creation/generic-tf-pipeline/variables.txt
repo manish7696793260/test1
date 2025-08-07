@@ -4,7 +4,11 @@ env=$region$environment
 project=${PROJECT} #Name of pipeline excluding env and pipeline
 BuildSpecFileNameForPlan=${BUILDSPECFILENAME}                                 #path of buildspec.yml file
 BuildSpecFileNameForApply=${BUILDSPECFILENAMEFORPLAN}
-ParametersFile=${PARAMETERSFILE}
+VariableFilePath=${VARIABLEFILEPATH}
+StatefileBucket=${STATEFILEBUCKET}
+BucketObjectPath=${BUCKETOBJECTPATH}
+StatefileBucket=${STATEFILEBUCKET}
+DynamoDBTableName=${DYNAMODBTTABLENAME}
 
 ###Automated
 ApplicationName="$region-$project-ec2"                                                #EC2 CodeDeploy Application group Name

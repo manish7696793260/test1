@@ -5,25 +5,7 @@ Parameters:
     Type: String
     Description: Name of the application.
     MinLength: "1"
-    MaxLength: "80"
-    AllowedPattern: "[A-Za-z0-9-]+"
-    ConstraintDescription: Malformed input parameter. AppName must only contain upper and lower case letters, numbers, and -.  
-  Region:
-    Type: String
-    Description: "Provide region value, for example: us, eu, jp etc."
-  CountryEnv:
-    Type: String
-    Description: "Provide country env variable , for example: usdev, usqa."
-  DynamoDBTableName:
-    Type: String
-    Description: "Provide DynamoDB Table Name for Terraform locking."
-  StatefileBucket:
-    Type: String
-    Description: "Provide bucket name for Terraform Statefile storage."
-  Env:
-    Type: String
-    Description: "Provide env variable , for example: dev, qa."
-
+    MaxLength: "100"
 Resources:
   CodeBuildTrustRole:
     Description: Creating service role in IAM for AWS CodeBuild
@@ -37,83 +19,97 @@ Resources:
             Service: [codebuild.amazonaws.com]
           Action: sts:AssumeRole
       Path: /
-
   CodeBuildRolePolicy:
     Type: AWS::IAM::Policy
     DependsOn: CodeBuildTrustRole
     Description: Setting IAM policy for the service role for AWS CodeBuild
     Properties:
-      PolicyName: !Sub "${AppName}-codebuild-policy"
+      PolicyName: CodeBuildRolePolicy
       PolicyDocument:
         Statement:
-          - Effect: Allow
-            Resource:  
-              - !Sub "arn:aws:s3:::*${Env}*"
-              - !Sub "arn:aws:s3:::*${Env}*/*"
-              - !Sub "arn:aws:s3:::*${Region}np*"
-              - !Sub "arn:aws:s3:::*${Region}np*/*"
-              - !Sub "arn:aws:s3:::${StatefileBucket}*"
-              - !Sub "arn:aws:s3:::${StatefileBucket}*/*"
-            Action: ["s3:*"] 
-          - Effect: Allow
-            Resource: 
-              - !Sub "arn:aws:sns:${AWS::Region}:${AWS::AccountId}:${CountryEnv}*"
-              - !Sub "arn:aws:sqs:${AWS::Region}:${AWS::AccountId}:${CountryEnv}*"
-            Action: 
-              - "sns:*"
-              - "sqs:*"
-          - Effect: Allow
-            Resource: ["*"]
-            Action:
-              - "logs:CreateLogGroup"
-              - "logs:CreateLogStream"
-              - "logs:PutLogEvents"
-          - Effect: Allow
-            Resource: ["*"]
-            Action:
-              - "ses:SendEmail"
-              - "ses:SendRawEmail" 
+          - Action:
+              - s3:*
+            Resource:
+              - !Sub "arn:aws:s3:::regionenv*"
+              - !Sub "arn:aws:s3:::environment_variable*"
+            Effect: Allow
+            Effect: Allow
           - Effect: Allow
             Resource:
-              - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${CountryEnv}-*"
+              - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/regionenv*"
+              - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/environment_variable*"
+              - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:regionenv*"
+              - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:environment_variable*"
             Action:
-              - "lambda:*"
+              - logs:*
+          - Effect: Allow
+            Resource:
+              - !Sub "arn:aws:kms:${AWS::Region}:${AWS::AccountId}:key/*"
+            Action:
+              - kms:*
+          - Effect: Allow
+            Resource:
+              - !Sub "arn:aws:ses:${AWS::Region}:${AWS::AccountId}:identity/*"
+            Action:
+              - ses:SendEmail
+          - Effect: Allow
+            Resource:
+              - !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/regionenv*"
+              - !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/environment_variable*"
+            Action:
+              - dynamodb:*
+          - Effect: Allow
+            Resource:
+              - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:regionenv*"
+              - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:environment_variable*"
+              - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:layer:regionenv*"
+              - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:layer:environment_variable*"
+            Action:
+              - lambda:*
+          - Action:
+              - SNS:SetTopicAttributes
+              - SNS:Subscribe
+              - SNS:Unsubscribe
+              - SNS:SetSubscriptionAttributes
+              - SNS:GetTopicAttributes
+            Resource:
+              - !Sub "arn:aws:sns:${AWS::Region}:${AWS::AccountId}:regionenv*"
+          - Action:
+              - sqs:*
+            Resource:
+              - !Sub "arn:aws:sqs:${AWS::Region}:${AWS::AccountId}:regionenv*"
           - Effect: Allow
             Resource: ["*"]
             Action:
-              - "cloudfront:*" 
+              - "cloudfront:*"
               - "acm:*"
-              - "ec2:*" 
+              - "ec2:*"
               - "route53:*"
               - "waf:*"
-              - "wafv2:*" 
+              - "wafv2:*"
               - "apigateway:*"
               - "kms:*"
           - Effect: Allow
-            Resource: 
-              - !Sub "arn:aws:iam::${AWS::AccountId}:role/${CountryEnv}-*"
-              - !Sub "arn:aws:iam::${AWS::AccountId}:policy/${CountryEnv}-*"
-            Action:
-              - "iam:*" 
+            Resource:
+              - !Sub "arn:aws:iam::${AWS::AccountId}:role/regionenv*"
+              - !Sub "arn:aws:iam::${AWS::AccountId}:role/environment_variable*"
+              - !Sub "arn:aws:iam::${AWS::AccountId}:policy/regionenv*"
+              - !Sub "arn:aws:iam::${AWS::AccountId}:policy/environment_variable*"
           - Effect: Allow
-            Resource: 
-              - !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${DynamoDBTableName}"
-            Action:
-              - "dynamodb:*" 
-          - Effect: Allow
-            Resource: 
+            Resource:
               - !Sub "arn:aws:codeartifact:${AWS::Region}:${AWS::AccountId}:domain*"
               - !Sub "arn:aws:codeartifact:${AWS::Region}:${AWS::AccountId}:repository*"
-              - !Sub "arn:aws:codeartifact:${AWS::Region}:${AWS::AccountId}:package/${Region}-omron-code-artifact/${Region}-omron-common-packages*"
+              - !Sub "arn:aws:codeartifact:${AWS::Region}:${AWS::AccountId}:package*"
             Action:
-              - "codeartifact:Describe*"
-              - "codeartifact:Get*"
-              - "codeartifact:List*"
-              - "codeartifact:ReadFromRepository*"
-              - "codeartifact:PublishPackageVersion"
+              - codeartifact:*
+          - Effect: Allow
+            Action: sts:GetServiceBearerToken
+            Resource:
+              - !Sub "arn:aws:sts::${AWS::AccountId}:assumed-role/*"
+            Condition:
+                StringEquals:
+                   "sts:AWSServiceName": "codeartifact.amazonaws.com"
       Roles: [!Ref CodeBuildTrustRole]
-
-
   CodePipelineTrustRole:
     Description: Creating service role in IAM for AWS CodePipeline
     Type: AWS::IAM::Role
@@ -126,13 +122,12 @@ Resources:
             Service: [codepipeline.amazonaws.com]
           Action: sts:AssumeRole
       Path: /
-
   CodePipelineRolePolicy:
     Type: AWS::IAM::Policy
     DependsOn: CodePipelineTrustRole
     Description: Setting IAM policy for the service role for AWS CodePipeline
     Properties:
-      PolicyName: !Sub "${AppName}-codepipeline-policy"
+      PolicyName: CodePipelineRolePolicy
       PolicyDocument:
         Statement:
         - Action: ["cloudwatch:*", "s3:*", "iam:PassRole","codebuild:*","codestar:*", "codestar-connections:UseConnection"]
@@ -143,7 +138,9 @@ Outputs:
   CodePipelineRole:
     Description: "Role for code pipeline"
     Value: !GetAtt CodePipelineTrustRole.Arn
+  CloudformationDeployRole:
+    Description: "Role for cloudformation to deploy with."
+    Value: !GetAtt CloudFormationTrustRole.Arn
   CodeBuildRole:
     Description: "Role for code build to build"
     Value: !GetAtt CodeBuildTrustRole.Arn
-
