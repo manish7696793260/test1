@@ -60,7 +60,7 @@ phases:
          echo "not EU INIT";
         fi
       - |
-        if expr "${CODEBUILD_INITIATOR}" : ".*codepipeline/eusv1-generic-tf-create-pipeline" >/dev/null; then
+        if expr "${CODEBUILD_INITIATOR}" : ".*codepipeline/euv1-generic-tf-create-pipeline" >/dev/null; then
          cd generic-codepipeline-creation/generic-tf-pipeline; chmod +x tf-pipeline-deploy.sh; ./tf-pipeline-deploy.sh; else
          echo "not EU TF";
         fi
