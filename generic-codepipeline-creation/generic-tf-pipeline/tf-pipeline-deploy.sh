@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 wget https://releases.hashicorp.com/terraform/1.11.2/terraform_1.11.2_linux_amd64.zip
 unzip terraform_1.11.2_linux_amd64.zip
 mv terraform /usr/local/bin/
