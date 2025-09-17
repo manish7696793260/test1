@@ -1,3 +1,7 @@
+name: Testing Self-Hosted Runner 2
+
+on:
+  workflow_dispatch:
 jobs:
   build:
     runs-on: github-actions
@@ -18,4 +22,5 @@ jobs:
 
       - name: Run tests
         run: npm test
+
 
