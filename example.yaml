@@ -5,9 +5,10 @@ on:
 
 jobs:
   testing:
-    runs-on: [self-hosted, linux, prod]
+    runs-on: [self-hosted, linux, X64]
     steps:
       - name: Echo Content
         run: |
           echo "Ok"
           sleep 15s
+
