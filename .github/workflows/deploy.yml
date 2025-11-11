@@ -7,4 +7,4 @@ jobs:
     runs-on: self-hosted   # ya 'ubuntu-latest' agar aap GitHub-hosted runner use kar rahe ho
     steps:
       - name: Print message
-        run: echo "Hello from GitHub Actions!, second repo"
+        run: echo "Hello from GitHub Actions!, second repo, second branch"
