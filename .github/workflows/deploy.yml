@@ -1,29 +1,10 @@
-name: Node.js Deploy
+name: Print Hello
 
-on:
-  workflow_dispatch:
+on: [push]
+
 jobs:
-  build-and-deploy:
-    runs-on: self-hosted   # yeh batata hai ki self-hosted runner use hoga
-
+  say-hello:
+    runs-on: self-hosted   # ya 'ubuntu-latest' agar aap GitHub-hosted runner use kar rahe ho
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'   # apna version daal lo
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Build project
-        run: npm run build
-
-      - name: Deploy (Custom Step)
-        run: |
-          # yahan tum apna deploy ka command likho
-          # jaise pm2, docker ya copy karna hai
-          pm2 stop myapp || true
-          pm2 start npm --name "myapp" -- run start
+      - name: Print message
+        run: echo "Hello from GitHub Actions!"
