@@ -1,4 +1,4 @@
-name: Print Hello
+name: Print Hello 2
 
 on: [push]
 
