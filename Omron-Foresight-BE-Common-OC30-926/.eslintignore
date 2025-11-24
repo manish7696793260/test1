@@ -1,7 +1,0 @@
-node_modules/
-.vscode
-dist/
-buildspec.yml
-initial-setup-saml.yaml
-initial-setup-buildspec.yml
-archive
