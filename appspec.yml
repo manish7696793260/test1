@@ -2,12 +2,12 @@ version: 0.0
 os: linux
 
 files:
-  - source: index.html
+  - source: config/index.html
     destination: /var/www/html/
     overwrite: true
 
 hooks:
   BeforeInstall:
-    - location: scripts/scripts.sh
+    - location: scripts/script.sh
       timeout: 300
       runas: root
