@@ -6,10 +6,5 @@ files:
     destination: /var/www/html/
     overwrite: true
 
-hooks:
-  BeforeInstall:
-    - location: config/scripts/scripts.sh
-      timeout: 300
-      runas: root
 
 
