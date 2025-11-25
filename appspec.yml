@@ -2,7 +2,7 @@ version: 0.0
 os: linux
 
 files:
-  - source: /
+  - source: /config/index.html
     destination: /var/www/html/
     overwrite: true
 
@@ -11,4 +11,5 @@ hooks:
     - location: config/scripts/scripts.sh
       timeout: 300
       runas: root
+
 
