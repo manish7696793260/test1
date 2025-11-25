@@ -8,6 +8,7 @@ files:
 
 hooks:
   BeforeInstall:
-    - location: config/scripts/script.sh
+    - location: config/scripts/scripts.sh
       timeout: 300
       runas: root
+
